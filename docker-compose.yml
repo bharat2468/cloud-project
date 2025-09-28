@@ -1,20 +1,29 @@
 version: '3'
 services:
   user:
-    image: user
+    build: ./User
     ports:
       - "3001:3001"
-    command: node server.js
+    environment:
+      - PORT=3001
+    env_file:
+      - ./User/.env
 
   cart:
-    image: cart
+    build: ./Cart
     ports:
       - "3003:3003"
-    command: node server.js  
+    environment:
+      - PORT=3003
+    env_file:
+      - ./Cart/.env
 
   product:
-    image: product
+    build: ./Product
     ports:
       - "3002:3002"
-    command: node server.js
+    environment:
+      - PORT=3002
+    env_file:
+      - ./Product/.env
     

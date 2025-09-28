@@ -9,15 +9,24 @@ import clip4 from "../assets/clip-04.jpg";
 import profile from "../assets/profile.jpg";
 import profileg from "../assets/profileGirl.jpg";
 import { useState, useEffect, Fragment } from "react";
+
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  age: number;
+  phone: string;
+  gender: string;
+}
+
 function Profile() {
-
-
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      fetch("http://localhost:3001/users/", {
+      fetch(`${import.meta.env.VITE_USER_API_URL}/users/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -42,10 +51,29 @@ function Profile() {
   // if (data.gender === "female") {
   //   image = profileg;
   // }
+  if (!user) {
+    return (
+      <Fragment>
+        <NavBar />
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="page-content">
+                <div className="text-center">
+                  <h4>Loading profile...</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Fragment>
+    );
+  }
+
   return (
     <Fragment>
       <NavBar />
-      <div className="widt">
+      <div className="container">
         <div className="row">
           <div className="col-lg-12">
             <div className="page-content">

@@ -1,11 +1,16 @@
-FROM node
+FROM node:18-alpine
+
+# Install build dependencies for native modules like bcrypt
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
-COPY . /app
-
-EXPOSE 3001:3001
+COPY package*.json ./
 
 RUN npm install
 
-CMD npm run dev
+COPY . .
+
+EXPOSE 3001
+
+CMD ["npm", "start"]

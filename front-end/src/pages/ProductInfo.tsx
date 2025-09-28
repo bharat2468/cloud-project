@@ -2,14 +2,23 @@ import "../Style/profile.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Fragment, useState, useEffect } from "react";
 
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image: string;
+}
+
 function ProductInfo() {
-  const [inputValue, setInputValue] = useState({});
+  const [inputValue, setInputValue] = useState<Product | null>(null);
   const productID = localStorage.getItem("productID");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3002/products/${productID}`, {
+        const response = await fetch(`${import.meta.env.VITE_PRODUCT_API_URL}/products/${productID}`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -29,7 +38,7 @@ function ProductInfo() {
     const token = localStorage.getItem("token");
     if (token) {
       console.log("Add to cart");
-      fetch(`http://localhost:3003/cart/${productID}`, {
+      fetch(`${import.meta.env.VITE_CART_API_URL}/cart/${productID}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,21 +51,36 @@ function ProductInfo() {
             alert("Added to cart");
           } else {
             console.log("Failed to add to cart");
-            window.location.href = "/login";
           }
         })
         .catch((error) => {
           console.error("Error:", error);
         });
+    } else {
+      console.log("Token not found");
+      window.location.href = "/login";
     }
-
-  
-
   };
+
+  if (!inputValue) {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="page-content">
+              <div className="text-center">
+                <h4>Loading product...</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Fragment>
-      <div className="widt">
+      <div className="container">
         <div className="row">
           <div className="col-lg-12">
             <div className="page-content">
