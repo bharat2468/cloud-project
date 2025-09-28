@@ -351,22 +351,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-### Original Contributors
-- [Thomas Maged](https://github.com/Thomas-Maged)
-- [Maximous Atef](https://github.com/Maxiatef) 
-- [Kirollos Nessim](https://github.com/KirollosNessem)
-- [Ramez Hesham](https://github.com/RamezHesham)
-- [Yara Wael](https://github.com/yara880)
-- [Nourhane Amir](https://github.com/NourhaneAmir)
+Contributors
+- [Bharat Pinjani](https://github.com/bharat2468)
+- [Shivanshi Rawat](https://github.com/RawaShivanshi) 
 
-### Modernization & Enhancement
-- **Bharat Pinjani** - Complete UI/UX overhaul with DaisyUI integration, microservices architecture improvements, and modern React patterns
-
-### Special Thanks
-- **DaisyUI Team** - For the beautiful component library
-- **Tailwind CSS** - For the utility-first CSS framework  
-- **Vite Team** - For the lightning-fast build tool
-- **MongoDB** - For the flexible NoSQL database
 
 ---
 
