@@ -62,19 +62,27 @@ function ModernCart() {
   const removeFromCart = async (productId: string) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${import.meta.env.VITE_CART_API_URL}/cart/remove`, {
+      const response = await fetch(`${import.meta.env.VITE_CART_API_URL}/cart/${productId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer " + token,
-        },
-        body: JSON.stringify({ productId })
+        }
       });
 
       if (response.ok) {
-        // Refresh cart data
-        const updatedData = await response.json();
-        setCartData(updatedData);
+        // Refresh cart data by fetching again
+        const refreshResponse = await fetch(`${import.meta.env.VITE_CART_API_URL}/cart`, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+          },
+        });
+        
+        if (refreshResponse.ok) {
+          const updatedData = await refreshResponse.json();
+          setCartData(updatedData);
+        }
       }
     } catch (error) {
       console.error("Error removing item:", error);

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <linearGradient id="controllerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="3" dy="3" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="96" cy="96" r="90" fill="url(#controllerGradient)" filter="url(#shadow)"/>
+  
+  <!-- Controller Body -->
+  <rect x="48" y="78" width="96" height="36" rx="18" ry="18" fill="#ffffff" opacity="0.95"/>
+  
+  <!-- D-Pad (Left side) -->
+  <rect x="62" y="87" width="18" height="6" rx="3" fill="#667eea"/>
+  <rect x="68" y="81" width="6" height="18" rx="3" fill="#667eea"/>
+  
+  <!-- Action Buttons (Right side) -->
+  <circle cx="116" cy="87" r="4" fill="#667eea"/>
+  <circle cx="126" cy="91" r="4" fill="#667eea"/>
+  <circle cx="116" cy="95" r="4" fill="#667eea"/>
+  <circle cx="106" cy="91" r="4" fill="#667eea"/>
+  
+  <!-- Controller Grips -->
+  <ellipse cx="58" cy="120" rx="12" ry="9" fill="#ffffff" opacity="0.95"/>
+  <ellipse cx="134" cy="120" rx="12" ry="9" fill="#ffffff" opacity="0.95"/>
+  
+  <!-- Center Logo -->
+  <circle cx="96" cy="91" r="8" fill="#667eea" opacity="0.8"/>
+  <text x="96" y="96" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#ffffff">G</text>
+</svg>

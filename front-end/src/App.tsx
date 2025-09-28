@@ -4,24 +4,31 @@ import ModernProductInfo from "./pages/ModernProductInfo";
 import ModernRegister from "./pages/ModernRegister";
 import ModernHome from "./pages/ModernHome";
 import ModernCart from "./pages/ModernCart";
-// import CheckOut from "./pages/CheckOut";
+import ModernProfile from "./pages/ModernProfile";
+import ModernCheckout from "./pages/ModernCheckout";
 import ModernNavBar from "./components/ModernNavBar";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-base-100">
+      <div className="min-h-screen bg-base-100 flex flex-col">
         <ModernNavBar />
-        <Routes>
-          <Route index path="/" element={<ModernHome />} />
-          <Route path="/register" element={<ModernRegister />} />
-          <Route path="/login" element={<ModernLogin />} />
-          <Route path="/product-info" element={<ModernProductInfo />} />
-          <Route path="/cart" element={<ModernCart />} />
-          {/* <Route path="/checkout" element={<CheckOut />} /> */}
-        </Routes>
+        <div className="flex-grow">
+          <Routes>
+            <Route path="/" element={<ModernHome />} />
+            <Route path="/login" element={<ModernLogin />} />
+            <Route path="/register" element={<ModernRegister />} />
+            <Route path="/product-info" element={<ModernProductInfo />} />
+            <Route path="/cart" element={<ModernCart />} />
+            <Route path="/profile" element={<ModernProfile />} />
+            <Route path="/checkout" element={<ModernCheckout />} />
+          </Routes>
+        </div>
+        <Footer />
       </div>
     </Router>
   );
 }
+
 export default App;

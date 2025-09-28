@@ -20,10 +20,15 @@ function ModernProductInfo() {
     const fetchProduct = async () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get("id");
+        let productId = urlParams.get("id");
+        
+        // Fallback to localStorage if URL parameter is not found
+        if (!productId) {
+          productId = localStorage.getItem("productID");
+        }
         
         if (!productId) {
-          setError("Product ID not found");
+          setError("Product ID not found in URL or localStorage");
           setLoading(false);
           return;
         }
@@ -59,29 +64,28 @@ function ModernProductInfo() {
         return;
       }
 
-      const response = await fetch(`${import.meta.env.VITE_CART_API_URL}/cart`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token,
-        },
-        body: JSON.stringify({
-          productId: product._id,
-          quantity: quantity
-        })
-      });
+      // Add quantity number of items to cart (make multiple requests for quantity > 1)
+      for (let i = 0; i < quantity; i++) {
+        const response = await fetch(`${import.meta.env.VITE_CART_API_URL}/cart/${product._id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+          }
+        });
 
-      if (response.ok) {
-        // Show success message
-        const successAlert = document.getElementById('success-alert');
-        if (successAlert) {
-          successAlert.classList.remove('hidden');
-          setTimeout(() => {
-            successAlert.classList.add('hidden');
-          }, 3000);
+        if (!response.ok) {
+          throw new Error(`Failed to add item ${i + 1} to cart`);
         }
-      } else {
-        throw new Error('Failed to add to cart');
+      }
+
+      // Show success message
+      const successAlert = document.getElementById('success-alert');
+      if (successAlert) {
+        successAlert.classList.remove('hidden');
+        setTimeout(() => {
+          successAlert.classList.add('hidden');
+        }, 3000);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -263,23 +267,7 @@ function ModernProductInfo() {
             </div>
           </div>
 
-          {/* Related Products Section */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-6">Related Games</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map((item) => (
-                <div key={item} className="card bg-base-100 shadow-xl">
-                  <figure>
-                    <div className="w-full h-48 bg-base-300 animate-pulse"></div>
-                  </figure>
-                  <div className="card-body">
-                    <div className="h-4 bg-base-300 rounded animate-pulse mb-2"></div>
-                    <div className="h-6 bg-base-300 rounded animate-pulse"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          
         </div>
       </div>
     </Fragment>
