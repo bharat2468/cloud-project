@@ -1,29 +1,27 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./pages/Login";
-import Profile from "./pages/Profile";
-import ProductInfo from "./pages/ProductInfo";
-import Register from "./pages/Register";
-import { Fragment } from "react";
-import Home from "./pages/Home";
-import Cart from "./pages/Cart";
-import CheckOut from "./pages/CheckOut";
-import NavBar from "./component/NavBar";
+import ModernLogin from "./pages/ModernLogin";
+import ModernProductInfo from "./pages/ModernProductInfo";
+import ModernRegister from "./pages/ModernRegister";
+import ModernHome from "./pages/ModernHome";
+import ModernCart from "./pages/ModernCart";
+// import CheckOut from "./pages/CheckOut";
+import ModernNavBar from "./components/ModernNavBar";
+
 function App() {
   return (
-    <Fragment>
-      <NavBar />
-      <Router>
+    <Router>
+      <div className="min-h-screen bg-base-100">
+        <ModernNavBar />
         <Routes>
-          <Route index path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/productInfo/:productId" element={<ProductInfo />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<CheckOut />} />
+          <Route index path="/" element={<ModernHome />} />
+          <Route path="/register" element={<ModernRegister />} />
+          <Route path="/login" element={<ModernLogin />} />
+          <Route path="/product-info" element={<ModernProductInfo />} />
+          <Route path="/cart" element={<ModernCart />} />
+          {/* <Route path="/checkout" element={<CheckOut />} /> */}
         </Routes>
-      </Router>
-    </Fragment>
+      </div>
+    </Router>
   );
 }
 export default App;

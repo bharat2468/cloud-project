@@ -60,7 +60,7 @@ const loginUser = async (req, res) => {
           },
         },
         process.env.ACCESS_TOKEN,
-        { expiresIn: "5m" }
+        { expiresIn: "500m" }
       );
       res.status(200).json(accessToken);
       console.log(accessToken);

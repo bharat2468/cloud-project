@@ -1,11 +1,4 @@
 import "../Style/profile.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import NavBar from "../component/NavBar";
-import data from "../data.json";
-import clip1 from "../assets/clip-01.jpg";
-import clip2 from "../assets/clip-02.jpg";
-import clip3 from "../assets/clip-03.jpg";
-import clip4 from "../assets/clip-04.jpg";
 import profile from "../assets/profile.jpg";
 import profileg from "../assets/profileGirl.jpg";
 import { useState, useEffect, Fragment } from "react";
@@ -72,7 +65,6 @@ function Profile() {
 
   return (
     <Fragment>
-      <NavBar />
       <div className="container">
         <div className="row">
           <div className="col-lg-12">

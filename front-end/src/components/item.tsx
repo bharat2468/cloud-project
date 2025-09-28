@@ -1,8 +1,3 @@
-import "../Style/Item.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import React from "react";
-import image from "../assets/profile.jpg";
-import data from "../data.json";
 interface Props {
   price: number;
   name: string;
