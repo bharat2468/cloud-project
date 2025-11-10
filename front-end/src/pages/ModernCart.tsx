@@ -8,6 +8,17 @@ interface CartProduct {
   image: string;
 }
 
+interface CartApiResponse {
+  success: boolean;
+  message: string;
+  cart: {
+    products: CartProduct[];
+    total: number;
+    itemCount: number;
+  };
+  timestamp: string;
+}
+
 interface CartData {
   total: number;
   Products: CartProduct[];
@@ -36,8 +47,12 @@ function ModernCart() {
         });
 
         if (response.ok) {
-          const data = await response.json();
-          setCartData(data);
+          const data: CartApiResponse = await response.json();
+          // Transform the API response to match the expected format
+          setCartData({
+            total: data.cart.total,
+            Products: data.cart.products
+          });
         } else {
           if (response.status === 401) {
             setError("Session expired. Please login again.");
@@ -80,8 +95,12 @@ function ModernCart() {
         });
         
         if (refreshResponse.ok) {
-          const updatedData = await refreshResponse.json();
-          setCartData(updatedData);
+          const updatedData: CartApiResponse = await refreshResponse.json();
+          // Transform the API response to match the expected format
+          setCartData({
+            total: updatedData.cart.total,
+            Products: updatedData.cart.products
+          });
         }
       }
     } catch (error) {
@@ -121,14 +140,14 @@ function ModernCart() {
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-primary mb-2">Your Gaming Cart</h1>
             <p className="text-base-content/70">
-              {cartData.Products.length > 0 
+              {cartData.Products && cartData.Products.length > 0 
                 ? `${cartData.Products.length} items in your cart`
                 : "Your cart is empty"
               }
             </p>
           </div>
 
-          {cartData.Products.length === 0 ? (
+          {cartData.Products && cartData.Products.length === 0 ? (
             // Empty Cart State
             <div className="text-center py-16">
               <div className="mb-8">
@@ -155,7 +174,7 @@ function ModernCart() {
                     <h2 className="card-title text-2xl mb-4">Cart Items</h2>
                     
                     <div className="space-y-4">
-                      {cartData.Products.map((product) => (
+                      {cartData.Products && cartData.Products.length > 0 && cartData.Products.map((product) => (
                         <div key={product._id} className="flex items-center gap-4 p-4 border border-base-300 rounded-lg hover:shadow-md transition-shadow">
                           <div className="avatar">
                             <div className="w-20 h-20 rounded-lg">

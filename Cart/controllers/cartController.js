@@ -31,9 +31,23 @@ const getCartProducts = async (req, res) => {
                 try {
                     const response = await fetch(`${productApiUrl}/products/${productId}`);
                     if (response.ok) {
-                        const product = await response.json();
+                        const productResponse = await response.json();
+                        
+                        // Handle both old and new Product API response formats
+                        let product;
+                        if (productResponse.success && productResponse.data) {
+                            // New format: { success: true, data: {...} }
+                            product = productResponse.data;
+                        } else if (productResponse._id || productResponse.id) {
+                            // Old format: direct product object
+                            product = productResponse;
+                        } else {
+                            console.log(`Invalid product response format for ${productId}`);
+                            continue;
+                        }
+                        
                         Products.push(product);
-                        total += product.price;
+                        total += product.price || 0;
                     } else {
                         console.log(`Product ${productId} not found in Product service`);
                     }

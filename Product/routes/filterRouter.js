@@ -1,10 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const {categoryFilter,priceFilter, categorypriceFilter} = require("../controllers/filterController")
+const {
+    categoryFilter,
+    priceFilter,
+    priceRangeFilter,
+    categoryPriceFilter,
+    getCategories
+} = require("../controllers/filterController");
 
-router.get("/category/:category", categoryFilter)
-router.get("/price/:price", priceFilter)
-router.get("/categoryprice/:category&&:price",  categorypriceFilter)
+// Get available categories
+router.get("/categories", getCategories);
 
+// Filter by category
+router.get("/category/:category", categoryFilter);
 
-module.exports = router
+// Filter by maximum price
+router.get("/price/:maxPrice", priceFilter);
+
+// Filter by price range
+router.get("/price/:minPrice/:maxPrice", priceRangeFilter);
+
+// Filter by category and maximum price
+router.get("/category/:category/price/:maxPrice", categoryPriceFilter);
+
+module.exports = router;

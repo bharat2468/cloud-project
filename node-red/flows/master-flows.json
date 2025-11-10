@@ -1,0 +1,68 @@
+[
+    {
+        "id": "main-tab",
+        "type": "tab",
+        "label": "🎯 E-Commerce Gateway Hub",
+        "disabled": false,
+        "info": "Central control hub for all microservices"
+    },
+    {
+        "id": "gateway-health",
+        "type": "inject",
+        "z": "main-tab",
+        "name": "🚀 Gateway Health Check",
+        "props": [{"p": "payload"}],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "5",
+        "topic": "health",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 80,
+        "wires": [["gateway-health-check"]]
+    },
+    {
+        "id": "gateway-health-check",
+        "type": "function",
+        "z": "main-tab",
+        "name": "Gateway Health Status",
+        "func": "// Get all service statistics\nconst userStats = global.get('userServiceStats') || { startTime: new Date().toISOString() };\nconst productStats = global.get('productServiceStats') || { startTime: new Date().toISOString() };\nconst cartStats = global.get('cartServiceStats') || { startTime: new Date().toISOString() };\n\n// Calculate total system requests\nconst userRequests = (userStats.registrations || 0) + (userStats.logins || 0) + (userStats.profileRequests || 0);\nconst productRequests = (productStats.getAllRequests || 0) + (productStats.getByIdRequests || 0) + (productStats.filterRequests || 0);\nconst cartRequests = (cartStats.getCartRequests || 0) + (cartStats.addItemRequests || 0) + (cartStats.removeItemRequests || 0);\n\nconst totalRequests = userRequests + productRequests + cartRequests;\nconst totalErrors = (userStats.errors || 0) + (productStats.errors || 0) + (cartStats.errors || 0);\n\n// Calculate system uptime (using earliest service start time)\nconst serviceStartTimes = [userStats.startTime, productStats.startTime, cartStats.startTime];\nconst earliestStart = new Date(Math.min(...serviceStartTimes.map(t => new Date(t))));\nconst systemUptime = Math.round((new Date() - earliestStart) / 1000 / 60);\n\nconst healthReport = {\n    gateway: 'E-Commerce Node-RED Gateway',\n    status: 'HEALTHY',\n    timestamp: new Date().toISOString(),\n    systemUptime: `${systemUptime} minutes`,\n    totalRequests: totalRequests,\n    totalErrors: totalErrors,\n    services: {\n        userService: {\n            requests: userRequests,\n            errors: userStats.errors || 0,\n            breakdown: {\n                registrations: userStats.registrations || 0,\n                logins: userStats.logins || 0,\n                profileRequests: userStats.profileRequests || 0\n            }\n        },\n        productService: {\n            requests: productRequests,\n            errors: productStats.errors || 0,\n            breakdown: {\n                getAllRequests: productStats.getAllRequests || 0,\n                getByIdRequests: productStats.getByIdRequests || 0,\n                filterRequests: productStats.filterRequests || 0\n            }\n        },\n        cartService: {\n            requests: cartRequests,\n            errors: cartStats.errors || 0,\n            breakdown: {\n                getCartRequests: cartStats.getCartRequests || 0,\n                addItemRequests: cartStats.addItemRequests || 0,\n                removeItemRequests: cartStats.removeItemRequests || 0\n            }\n        }\n    }\n};\n\nnode.log(`🚀 GATEWAY HEALTH: ${totalRequests} total requests across all services (Errors: ${totalErrors})`);\n\nmsg.payload = healthReport;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 80,
+        "wires": [["gateway-health-debug"]]
+    },
+    {
+        "id": "gateway-health-debug",
+        "type": "debug",
+        "z": "main-tab",
+        "name": "🚀 Gateway Health Report",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "gateway-info",
+        "type": "comment",
+        "z": "main-tab",
+        "name": "🎯 E-Commerce Gateway Information",
+        "info": "# E-Commerce Node-RED Gateway\\n\\n## Services Managed:\\n- **User Service**: Registration, Login, Profile (Port 3001)\\n- **Product Service**: Product catalog and filtering (Port 3002)\\n- **Cart Service**: Shopping cart management (Port 3003)\\n\\n## Gateway Features:\\n- ✅ JWT Authentication validation\\n- ✅ Request routing and load balancing\\n- ✅ Error handling and logging\\n- ✅ Statistics tracking\\n- ✅ Health monitoring\\n\\n## API Endpoints:\\n\\n### User Service (via Node-RED)\\n- POST `/api/users/register` - User registration\\n- POST `/api/users/login` - User login\\n- GET `/api/users/profile` - Get user profile (requires auth)\\n\\n### Product Service (via Node-RED)\\n- GET `/api/products` - Get all products\\n- GET `/api/products/:id` - Get specific product\\n- GET `/api/products/filter/:category` - Filter products by category\\n\\n### Cart Service (via Node-RED)\\n- GET `/api/cart` - Get user's cart (requires auth)\\n- POST `/api/cart/:productid` - Add item to cart (requires auth)\\n- DELETE `/api/cart/:productid` - Remove item from cart (requires auth)\\n\\n## Architecture:\\n- **Frontend**: React (Port 5174) → Node-RED Gateway (Port 1880)\\n- **Gateway**: Node-RED (Port 1880) → Microservices\\n- **Services**: Docker containers with MongoDB Atlas\\n\\n## Security:\\n- JWT Bearer token validation on protected endpoints\\n- Service-to-service communication via Docker network\\n- Error handling without exposing internal details\\n\\n## Monitoring:\\n- Real-time request statistics\\n- Error tracking and logging\\n- Health check reports every 5 minutes\\n- Individual service monitoring",
+        "x": 200,
+        "y": 180,
+        "wires": []
+    }
+]

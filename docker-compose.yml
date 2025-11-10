@@ -1,5 +1,5 @@
-version: '3'
 services:
+  # Existing microservices
   user:
     build: ./User
     ports:
@@ -8,15 +8,8 @@ services:
       - PORT=3001
     env_file:
       - ./User/.env
-
-  cart:
-    build: ./Cart
-    ports:
-      - "3003:3003"
-    environment:
-      - PORT=3003
-    env_file:
-      - ./Cart/.env
+    networks:
+      - ecommerce-network
 
   product:
     build: ./Product
@@ -26,4 +19,46 @@ services:
       - PORT=3002
     env_file:
       - ./Product/.env
-    
+    networks:
+      - ecommerce-network
+
+  cart:
+    build: ./Cart
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+    env_file:
+      - ./Cart/.env
+    networks:
+      - ecommerce-network
+
+  # Node-RED for workflow orchestration
+  node-red:
+    image: nodered/node-red:latest
+    container_name: ecommerce-node-red
+    ports:
+      - "1880:1880"    # Node-RED Web Interface
+    volumes:
+      - node_red_data:/data
+      - ./node-red/flows:/data/flows    # Custom flows
+      - ./node-red/settings.js:/data/settings.js    # Custom settings
+    environment:
+      - TZ=Asia/Kolkata
+      - NODE_RED_ENABLE_PROJECTS=true
+    depends_on:
+      - user
+      - product
+      - cart
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+# Define custom network for better container communication
+networks:
+  ecommerce-network:
+    driver: bridge
+
+# Persistent storage for Node-RED
+volumes:
+  node_red_data:

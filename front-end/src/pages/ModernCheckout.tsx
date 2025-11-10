@@ -9,6 +9,17 @@ interface CartProduct {
   quantity?: number;
 }
 
+interface CartApiResponse {
+  success: boolean;
+  message: string;
+  cart: {
+    products: CartProduct[];
+    total: number;
+    itemCount: number;
+  };
+  timestamp: string;
+}
+
 interface CartData {
   total: number;
   Products: CartProduct[];
@@ -75,8 +86,12 @@ function ModernCheckout() {
         });
 
         if (response.ok) {
-          const data = await response.json();
-          setCartData(data);
+          const data: CartApiResponse = await response.json();
+          // Transform the API response to match the expected format
+          setCartData({
+            total: data.cart.total,
+            Products: data.cart.products
+          });
         } else {
           setError("Failed to load cart data");
         }
@@ -126,8 +141,62 @@ function ModernCheckout() {
     setProcessing(true);
     
     try {
-      // Simulate order processing
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        setError("Authentication required");
+        window.location.href = "/login";
+        return;
+      }
+
+      // Create order object
+      const orderData = {
+        items: cartData.Products.map(product => ({
+          productId: product._id,
+          name: product.name,
+          price: product.price,
+          category: product.category,
+          image: product.image
+        })),
+        shipping: shippingInfo,
+        payment: {
+          // In a real app, this would be tokenized/encrypted
+          cardNumber: paymentInfo.cardNumber.replace(/\s/g, ''),
+          cardholderName: paymentInfo.cardholderName,
+          expiryDate: paymentInfo.expiryDate,
+          // Never send CVV to backend in production
+        },
+        subtotal: cartData.total,
+        tax: calculateTax(),
+        shipping_cost: calculateShipping(),
+        total: calculateTotal()
+      };
+
+      // For demo purposes, we'll simulate order processing
+      // In production, this would call a real payment gateway
+      console.log("Processing order:", orderData);
+      
+      // Simulate processing time
       await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Clear the cart by calling the checkout endpoint
+      try {
+        const checkoutResponse = await fetch(`${import.meta.env.VITE_CART_API_URL}/cart/checkout`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+          }
+        });
+        
+        if (checkoutResponse.ok) {
+          console.log("Cart cleared successfully");
+        } else {
+          console.warn("Failed to clear cart, but order was processed");
+        }
+      } catch (cartError) {
+        console.warn("Cart checkout failed, but order was processed:", cartError);
+      }
       
       // Show success message
       const modal = document.getElementById('success_modal') as HTMLDialogElement;
@@ -170,7 +239,7 @@ function ModernCheckout() {
     );
   }
 
-  if (cartData.Products.length === 0) {
+  if (cartData.Products && cartData.Products.length === 0) {
     return (
       <div className="min-h-screen bg-base-200 flex items-center justify-center">
         <div className="text-center">
