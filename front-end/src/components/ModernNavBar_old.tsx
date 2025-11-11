@@ -10,6 +10,13 @@ function ModernNavBar() {
     window.location.href = "/";
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("productID");
+    setIsLoggedIn(false);
+    window.location.href = "/";
+  };
+
   return (
     <div className="navbar bg-base-100 shadow-lg">
       <div className="navbar-start">
@@ -22,7 +29,7 @@ function ModernNavBar() {
           <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
             <li><a href="/">Home</a></li>
             <li><a href="/cart">Cart</a></li>
-            {isAuthenticated && <li><a href="/profile">Profile</a></li>}
+            {isLoggedIn && <li><a href="/profile">Profile</a></li>}
           </ul>
         </div>
         <a href="/" className="btn btn-ghost text-xl font-bold">
@@ -34,7 +41,7 @@ function ModernNavBar() {
         <ul className="menu menu-horizontal px-1">
           <li><a href="/" className="btn btn-ghost">Home</a></li>
           <li><a href="/cart" className="btn btn-ghost">Cart</a></li>
-          {isAuthenticated && <li><a href="/profile" className="btn btn-ghost">Profile</a></li>}
+          {isLoggedIn && <li><a href="/profile" className="btn btn-ghost">Profile</a></li>}
         </ul>
       </div>
       
@@ -53,7 +60,7 @@ function ModernNavBar() {
         </a>
 
         {/* User Menu */}
-        {isAuthenticated ? (
+        {isLoggedIn ? (
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
@@ -61,12 +68,7 @@ function ModernNavBar() {
               </div>
             </div>
             <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-              <li>
-                <a href="/profile" className="justify-between">
-                  Profile
-                  {user && <span className="badge">{user.firstName}</span>}
-                </a>
-              </li>
+              <li><a href="/profile">Profile</a></li>
               <li><a href="/cart">Cart</a></li>
               <li><button onClick={handleLogout}>Logout</button></li>
             </ul>

@@ -1,10 +1,12 @@
 import { Fragment, useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 function ModernLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -22,9 +24,20 @@ function ModernLogin() {
       if (response.ok) {
         console.log("Login successful");
         const data = await response.json();
-        localStorage.setItem("token", data);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        window.location.href = "/";
+        
+        // Use the AuthContext login function
+        login(data.token);
+        
+        // Show success message
+        const successAlert = document.getElementById('success-alert');
+        if (successAlert) {
+          successAlert.classList.remove('hidden');
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1500);
+        } else {
+          window.location.href = "/";
+        }
       } else {
         const errorAlert = document.getElementById('error-alert');
         if (errorAlert) {

@@ -36,7 +36,7 @@ function ModernRegister() {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_USER_API_URL}/users`, {
+      const response = await fetch(`${import.meta.env.VITE_USER_API_URL}/users/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

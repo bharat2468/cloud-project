@@ -35,10 +35,27 @@ function ModernCart() {
         const token = localStorage.getItem("token");
 
         if (!token) {
-          window.location.href = "/login";
+          console.log("No token found, redirecting to login");
+          setError("Please login to view your cart");
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 1500);
           return;
         }
 
+        // Check if token has basic JWT structure
+        const tokenParts = token.split('.');
+        if (tokenParts.length !== 3) {
+          console.log("Invalid token format, clearing and redirecting");
+          localStorage.removeItem("token");
+          setError("Session invalid. Please login again.");
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 1500);
+          return;
+        }
+
+        console.log("Fetching cart data with token...");
         const response = await fetch(`${import.meta.env.VITE_CART_API_URL}/cart`, {
           headers: {
             "Content-Type": "application/json",
@@ -46,26 +63,35 @@ function ModernCart() {
           },
         });
 
+        console.log("Cart API response status:", response.status);
+
         if (response.ok) {
           const data: CartApiResponse = await response.json();
+          console.log("Cart data received successfully:", data.cart.itemCount, "items");
           // Transform the API response to match the expected format
           setCartData({
             total: data.cart.total,
             Products: data.cart.products
           });
         } else {
+          const errorText = await response.text();
+          console.error("Cart API error:", response.status, errorText);
+          
           if (response.status === 401) {
-            setError("Session expired. Please login again.");
+            console.log("Authentication failed - token expired or invalid");
+            localStorage.removeItem("token");
+            setError("Your session has expired. Please login again.");
             setTimeout(() => {
               window.location.href = "/login";
             }, 2000);
           } else {
-            setError("Failed to load cart data.");
+            console.error("Cart fetch failed with status:", response.status);
+            setError(`Failed to load cart data (${response.status}). Please try refreshing.`);
           }
         }
       } catch (error) {
-        console.error("Error:", error);
-        setError("Network error. Please try again.");
+        console.error("Cart fetch error:", error);
+        setError("Network error. Please check your connection and try again.");
       } finally {
         setLoading(false);
       }

@@ -60,10 +60,10 @@ const loginUser = async (req, res) => {
           },
         },
         process.env.ACCESS_TOKEN,
-        { expiresIn: "500m" }
+        { expiresIn: "24h" }  // Extended to 24 hours for better user experience
       );
       res.status(200).json(accessToken);
-      console.log(accessToken);
+      console.log(`✅ Login successful for ${email}, token expires in 24h`);
     } else {
       res.status(401).json({ message: "Wrong email or password" });
     }

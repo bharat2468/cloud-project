@@ -34,10 +34,12 @@ function ModernProfile() {
         const token = localStorage.getItem("token");
         
         if (!token) {
+          console.log("No token found, redirecting to login");
           window.location.href = "/login";
           return;
         }
 
+        console.log("Fetching user profile...");
         const response = await fetch(`${import.meta.env.VITE_USER_API_URL}/users/`, {
           method: "GET",
           headers: {
@@ -46,19 +48,24 @@ function ModernProfile() {
           },
         });
 
+        console.log("Profile API response status:", response.status);
+
         if (response.ok) {
           const data = await response.json();
+          console.log("Profile data received:", data);
           setUser(data);
         } else {
           if (response.status === 401) {
+            console.log("Token expired or invalid, clearing storage and redirecting");
             localStorage.removeItem("token");
             window.location.href = "/login";
           } else {
+            console.error("Profile fetch failed with status:", response.status);
             setError("Failed to load profile");
           }
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Profile fetch error:", error);
         setError("Network error. Please try again.");
       } finally {
         setLoading(false);
